@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Registration</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Visitor Registration</h1>
+        <form id="registration-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="host_name">Host Name:</label>
+            <input type="text" id="host_name" name="host_name" required>
+
+            <label for="purpose">Purpose:</label>
+            <textarea id="purpose" name="purpose" required></textarea>
+
+            <button type="submit">Register</button>
+        </form>
+        <div id="response-message"></div>
+    </div>
+
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                host_name: document.getElementById('host_name').value,
+                purpose: document.getElementById('purpose').value
+            };
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            const messageDiv = document.getElementById('response-message');
+
+            if (response.ok) {
+                messageDiv.textContent = `Success! Your PIN is: ${result.pin}`;
+                messageDiv.style.color = 'green';
+            } else {
+                messageDiv.textContent = result.error || 'An error occurred.';
+                messageDiv.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
